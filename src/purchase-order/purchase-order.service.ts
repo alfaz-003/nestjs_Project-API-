@@ -7,7 +7,7 @@ import { productModel } from 'src/product/productModel';
 import { Product } from 'src/product/productSchema';
 import {  purchaseOrderModel } from './purchase-orderModel';
 import { PurcahseOrder } from './purchaseOrderSchema';
-
+``
 @Injectable()
 export class PurchaseOrderService {
 
@@ -32,14 +32,20 @@ export class PurchaseOrderService {
              this.grand_total += this.sum[i];
         }
        
+
+
         //checking product data
        const a= await this.prservice.getSingleProduct(prchModel.product_id);
        console.log(a.purchase_price);
 
+
+
+
        //update opening_account reference
 
        const l = await this.partyservice.getSingleParty(prchModel.party_id) ;
-       const m = l.opening_account - this.grand_total;
+       l.opening_account  = l.opening_account - this.grand_total;
+      
 
        const d= new Date()
         this.c++;
@@ -61,28 +67,40 @@ export class PurchaseOrderService {
     //     prchModel.quantity = this.quantity;
     // }
 
-    if(m){
-        prchModel.grand_total = m;
+    if(this.grand_total){
+        prchModel.grand_total = this.grand_total;
     }
     
         const newOrder = new this.purchase(prchModel);
         return await newOrder.save();
     }
 
+
+
+
+
+
     async getAllorder(){
         const pr = await this.purchase.find().populate('party_id');
         return pr;
     }
+
+
 
     async getSingleOrder(order_id:string){
         const pr1 = await this.purchase.findById(order_id);
         return pr1;
     }
 
+
+
     async deleteOrder(order_Id: string){
         await this.purchase.deleteOne({_id: order_Id});
         return order_Id + " Deleted Successfully !!"
        }
+
+
+       
 
 //only for reference purpose as the data is inserted automatically
 
